@@ -1,0 +1,16 @@
+export const GAME_CONFIG = {
+  designWidth: 600,
+  designHeight: 560,
+  columns: 3,
+  rows: 3,
+  cellSize: 140,
+  symbolSize: 112,
+  background: 0x245c48,
+  baseSpinSteps: 11,
+  extraStepsPerReel: 2,
+  winLineDurationMs: 1000,
+  baseReelSpeedPxPerSecond: 2400,
+  reelSpeedIncrementPxPerSecond: 150,
+  maxReelBlurStrength: 12,
+  reelBlurReferenceSpeed: 2700,
+} as const;
