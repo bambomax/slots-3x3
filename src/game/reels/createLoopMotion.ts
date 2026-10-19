@@ -3,6 +3,11 @@ import type { SymbolId } from '../model';
 import type { SymbolTextures } from '../loadSymbolTextures';
 import { getLoopWindow } from './getLoopWindow';
 import { renderReel } from './renderReel';
+import {
+  easeOutCubic,
+  getBrakingDurationMs,
+  getBrakingSpeed,
+} from './reelMotionMath';
 import type { ReelState } from './types';
 import { VISUAL_STRIP } from './visualStrip';
 
@@ -95,8 +100,10 @@ export function createLoopMotion(
         entry,
         startPositionPx,
         targetPositionPx,
-        durationMs:
-          3 * remainingDistance / entry.reel.speedPxPerSecond * 1000,
+        durationMs: getBrakingDurationMs(
+          remainingDistance,
+          entry.reel.speedPxPerSecond,
+        ),
       };
     });
   };
@@ -122,10 +129,8 @@ export function createLoopMotion(
         ? 1
         : Math.min(recoveryElapsedMs / durationMs, 1);
 
-      const easedProgress = 1 - (1 - progress) ** 3;
-
-      // Cubic ease-out reduces speed by the square of remaining progress.
-      const currentSpeed = entry.reel.speedPxPerSecond * (1 - progress) ** 2;
+      const easedProgress = easeOutCubic(progress);
+      const currentSpeed = getBrakingSpeed(entry.reel.speedPxPerSecond, progress);
 
       entry.reel.setMotionBlur(currentSpeed);
 

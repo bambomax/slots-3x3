@@ -18,11 +18,11 @@ export type Reel = ReelState & {
 };
 
 export function createReel({
-                             textures,
-                             initialWindow,
-                             speedPxPerSecond,
-                             distancePx,
-                           }: CreateReelOptions): Reel {
+  textures,
+  initialWindow,
+  speedPxPerSecond,
+  distancePx,
+}: CreateReelOptions): Reel {
   const { cellSize, rows } = GAME_CONFIG;
 
   if (initialWindow.length !== rows + 2) {
@@ -79,8 +79,9 @@ export function createReel({
   // Clip the filtered strip to the reel viewport.
   container.mask = mask;
 
-  const symbols = initialWindow.map((symbolId) => {
-    const symbol = new Sprite(textures[symbolId]);
+  const symbols = initialWindow.map(() => {
+    // renderReel assigns and sizes the first texture.
+    const symbol = new Sprite();
 
     symbol.anchor.set(0.5);
     symbol.x = cellSize / 2;

@@ -24,15 +24,15 @@ export function renderReel(
 
     if (symbol.texture !== texture) {
       symbol.texture = texture;
-    }
 
-    // Keep symbols inside the cell without stretching.
-    symbol.scale.set(
-      Math.min(
-        symbolSize / texture.width,
-        symbolSize / texture.height,
-      ),
-    );
+      // Texture dimensions stay unchanged between texture replacements.
+      symbol.scale.set(
+        Math.min(
+          symbolSize / texture.width,
+          symbolSize / texture.height,
+        ),
+      );
+    }
 
     symbol.y =
       (index - 1) * cellSize +

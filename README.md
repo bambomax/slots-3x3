@@ -2,6 +2,8 @@
 
 A slot frontend demo built with PixiJS, TypeScript, and Vite. Reels start immediately while an asynchronous local mock generates the outcome, then stop on the returned matrix.
 
+![Slot 3x3 preview](docs/screenshots/slot-3x3.jpg)
+
 ## Getting started
 
 Use Node.js 22.12+ and npm.
@@ -58,6 +60,8 @@ src/
       renderReel.ts            Texture selection and sprite positioning
       createLoopMotion.ts      Continuous motion and error recovery
       updateReels.ts           Timed braking
+      prepareReelsStop.ts      Preserve the current window and plan the stop
+      reelMotionMath.ts        Shared braking duration, easing, and speed
       getLoopWindow.ts         Circular strip sampling
       visualStrip.ts           Animation symbol sequence
     presentation/
@@ -121,7 +125,7 @@ Errors are intentional. Their probability does not imply exactly one failure eve
 
 ## Testing
 
-Unit tests cover payline evaluation, stopping-strip construction, circular windows, abortable delays, mock success/failure/cancellation, and recovery alignment. Random tests replace `Math.random` so results are repeatable.
+Unit tests cover payline evaluation, stopping-strip construction, circular windows, abortable delays, mock success/failure/cancellation, recovery alignment, braking continuity, stop preparation, and texture sizing. Random tests replace `Math.random` so results are repeatable.
 
 Recovery tests mock rendering; they do not verify GPU output. There is no automated browser test suite.
 

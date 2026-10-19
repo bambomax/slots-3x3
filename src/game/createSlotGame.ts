@@ -1,13 +1,12 @@
 import { Application, Container } from 'pixi.js';
 import type { Matrix, SymbolId } from './model';
-import { buildReelStrip } from './buildReelStrip';
 import { evaluateWins } from './evaluateWins';
 import { requestSpin } from './requestSpin';
 import { GAME_CONFIG } from './config';
 import { loadSymbolTextures } from './loadSymbolTextures';
-import { renderReel } from './reels/renderReel';
 import { createReel, type Reel } from './reels/createReel';
 import { updateReels } from './reels/updateReels';
+import { prepareReelsStop } from './reels/prepareReelsStop';
 import { createWinPresenter } from './presentation/createWinPresenter';
 import { createControls } from '../ui/createControls';
 import { createLayout } from '../ui/createLayout';
@@ -153,38 +152,11 @@ export async function createSlotGame(
 
       loopMotion.stop();
 
-      reels.forEach((reel, column) => {
-        const currentStart = Math.floor(reel.offset / cellSize);
-
-        const currentWindow = reel.stripIds.slice(
-          currentStart,
-          currentStart + rows + 2,
-        );
-
-        const steps = reel.distancePx / cellSize;
-
-        reel.startOffsetPx = reel.offset - currentStart * cellSize;
-
-        const remainingDistance = reel.distancePx - reel.startOffsetPx;
-
-        // Match the initial braking speed to the current loop speed.
-        reel.durationMs = 3 * remainingDistance / reel.speedPxPerSecond * 1000;
-
-        reel.stripIds = buildReelStrip(
-          currentWindow,
-          nextResult[column],
-          steps,
-        );
-
-        reel.offset = reel.startOffsetPx;
-
-        renderReel(reel, textures);
-      });
+      prepareReelsStop(reels, nextResult);
 
       result = nextResult;
       elapsedMs = 0;
       phase = 'spinning';
-
     } catch (error: unknown) {
       if (disposed) {
         return;

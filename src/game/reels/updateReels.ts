@@ -1,5 +1,6 @@
 import type { SymbolTextures } from '../loadSymbolTextures';
 import { renderReel } from './renderReel';
+import { easeOutCubic, getBrakingSpeed } from './reelMotionMath';
 import type { ReelState } from './types';
 
 export function updateReels(
@@ -10,8 +11,7 @@ export function updateReels(
   reels.forEach((reel) => {
     const progress = Math.min(elapsedMs / reel.durationMs, 1);
 
-    // Slow down as the reel approaches its final position.
-    const easedProgress = 1 - (1 - progress) ** 3;
+    const easedProgress = easeOutCubic(progress);
 
     const remainingDistance = reel.distancePx - reel.startOffsetPx;
 
@@ -19,8 +19,7 @@ export function updateReels(
       reel.startOffsetPx +
       remainingDistance * easedProgress;
 
-    const currentSpeed =
-      reel.speedPxPerSecond * (1 - progress) ** 2;
+    const currentSpeed = getBrakingSpeed(reel.speedPxPerSecond, progress);
 
     reel.setMotionBlur(currentSpeed);
 
